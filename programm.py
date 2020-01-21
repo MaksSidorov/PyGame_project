@@ -5,7 +5,7 @@ import random
 
 pygame.init()
 # размеры окна:
-size = width, height = 500, 500
+size = width, height = 600, 600
 # screen — холст, на котором нужно рисовать:
 screen = pygame.display.set_mode(size)
 
@@ -13,6 +13,7 @@ all_sprites = pygame.sprite.Group()
 Ball_MOVE = [3, 0]
 horizontal_borders = pygame.sprite.Group()
 vertical_borders = pygame.sprite.Group()
+blocks = pygame.sprite.Group()
 
 
 class Border(pygame.sprite.Sprite):
@@ -29,10 +30,24 @@ class Border(pygame.sprite.Sprite):
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
 
 
+class Block(pygame.sprite.Sprite):
+    def __init__(self, x1, y1, w, h):
+        super().__init__(all_sprites)
+        self.add(blocks)
+        self.image = pygame.Surface([w, h])
+        pygame.draw.rect(self.image, (0, 0, 255), (0, 0, w, h))
+        self.rect = pygame.Rect(x1, y1, w, h)
+
+    def update(self):
+        pygame.draw.rect(self.image, (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), (0, 0, self.rect.width, self.rect.height))
+
+
 class Ball(pygame.sprite.Sprite):
     def __init__(self, radius, x, y):
         super().__init__(all_sprites)
         self.radius = radius
+        self.x = x
+        self.y = y
         self.image = pygame.Surface((2 * radius, 2 * radius), pygame.SRCALPHA, 32)
         pygame.draw.circle(self.image, pygame.Color("red"), (radius, radius), radius)
         self.rect = pygame.Rect(x, y, 2 * radius, 2 * radius)
@@ -42,22 +57,33 @@ class Ball(pygame.sprite.Sprite):
         self.vy = Ball_MOVE[1]
 
     def update(self):
-        self.rect = self.rect.move(self.vx, self.vy)
         if pygame.sprite.spritecollideany(self, horizontal_borders):
             self.vy = -self.vy
-        if pygame.sprite.spritecollideany(self, vertical_borders):
+        elif pygame.sprite.spritecollideany(self, vertical_borders):
             self.vx = -self.vx
+        elif pygame.sprite.spritecollideany(self, blocks):
+            for i in pygame.sprite.spritecollide(self, blocks, False):
+                if i.rect.x + 5 > self.rect.x or i.rect.x + i.rect.w - 5< self.rect.x:
+                    self.vx = -self.vx
+                    print(i.rect.x, self.rect.x, i.rect.x + i.rect.w )
 
+                else:
+                    self.vy = -self.vy
+                    print(i.rect.x, self.rect.x, i.rect.x + i.rect.w )
+        self.rect = self.rect.move(self.vx, self.vy)
 
 Border(5, 5, width - 5, 5)
 Border(5, height - 5, width - 5, height - 5)
 Border(5, 5, 5, height - 5)
 Border(width - 5, 5, width - 5, height - 5)
-
-Ball(10, 250, 400)
+Block(35, 80, 50, 50)
+Block(85, 80, 50, 50)
+Block(135, 80, 50, 50)
+Ball(10, 300, 500)
 running = True
 POS = [0, 0]
 flag = True
+COU = 1
 flag1 = True
 MYEVENTTYPE = 30
 pygame.time.set_timer(MYEVENTTYPE, 150)
@@ -72,26 +98,30 @@ while running:
         if event.type == pygame.MOUSEMOTION and flag:
             POS[0] = event.pos[0]
             POS[1] = event.pos[1]
-            if POS[0] <= 250 and POS[1] > 70:
+            if POS[0] < 300:
+                POS[1] = 600 - ((300 * (600 - POS[1]))//(300 - POS[0]))
                 POS[0] = 0
-            elif POS[0] >= 250 and POS[1] > 70:
-                POS[0] = 500
-            else:
+            elif POS[0] == 300:
                 POS[1] = 0
+            else:
+                POS[1] = 600 - ((300 * (600 - POS[1])) // (POS[0] - 300))
+                POS[0] = 600
 
         if event.type == pygame.MOUSEBUTTONDOWN and flag1:
             flag = False
             flag1 = False
-            Ball_MOVE[1] = -((500 - POS[1]) / 100)
-            if POS[0] <= 250:
+            Ball_MOVE[1] = -((600 - POS[1]) / 100)
+            print(POS)
+            if POS[0] <= 300:
                 Ball_MOVE[0] = -3
 
         if event.type == MYEVENTTYPE1:
             all_sprites.update()
-        if event.type == MYEVENTTYPE and not flag1:
-            Ball(10, 250, 400)
+        if event.type == MYEVENTTYPE and not flag1 and COU <= 10:
+            COU += 1
+            Ball(10, 300, 500)
     screen.fill((255, 255, 255))
-    pygame.draw.line(screen, (0, 255, 0), (250, 400), (POS[0], POS[1]), 1)
+    pygame.draw.line(screen, (0, 255, 0), (300, 500), (POS[0], POS[1]), 1)
     all_sprites.draw(screen)
     pygame.display.flip()
 # завершение работы:
