@@ -8,10 +8,11 @@ import sys
 pygame.init()
 
 FPS = 50
-
+pygame.display.set_caption('Balls&Blocks')
 # Фоновая музыка
-sound = pygame.mixer.music.load('data//music.mp3')
+pygame.mixer.music.load('data//music.mp3')
 pygame.mixer.music.play(-1)
+sound = pygame.mixer.Sound('data//boom_sound.wav')
 # размеры окна:
 size = width, height = 600, 600
 # screen — холст, на котором нужно рисовать:
@@ -179,7 +180,7 @@ while running:
             col = 20
             while col + 50 <= 500:
                 if random.randint(0, 1):
-                    NewBlock(col, 20, 50, 50, all_sprites, blocks, score)
+                    NewBlock(col, 500, 50, 50, all_sprites, blocks, score)
                 elif random.randint(1, 50) <= 3:
                     SpecBall(25, col, 20, random.randint(1, 2), all_sprites, spec_balls)
                 col += 50
@@ -214,6 +215,7 @@ while running:
                 sx = (POS[0] - 300) / 100
                 sy = -((height - POS[1]) / 200)
             PlayBall(10, width // 2, height, sx, sy, all_sprites, balls)
+            sound.play()
         if event.type == MYEVENTTYPE1 and flag1:
             balls.update()
         if balls_falls == balls_cou:
