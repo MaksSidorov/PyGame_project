@@ -2,6 +2,7 @@ import pygame
 import random
 
 
+# Класс для игровых границ
 class Border(pygame.sprite.Sprite):
     def __init__(self, x1, y1, x2, y2, main_group, ver_group, hor_1_group, hor_2_group):
         super().__init__(main_group)
@@ -18,6 +19,7 @@ class Border(pygame.sprite.Sprite):
             self.rect = pygame.Rect(x1, y1, x2 - x1, 1)
 
 
+# Игровые блоки
 class Block(pygame.sprite.Sprite):
     def __init__(self, x1, y1, w, h, main_group, blocks_group, score):
         super().__init__(main_group)
@@ -58,6 +60,7 @@ class Block(pygame.sprite.Sprite):
         self.image.blit(text, (text_x, text_y))
 
 
+# Красные или шарики, которые отправляет пользователь
 class Ball(pygame.sprite.Sprite):
     def __init__(self, radius, x, y, sx, sy, main_group, balls_group):
         super().__init__(main_group)
@@ -73,6 +76,7 @@ class Ball(pygame.sprite.Sprite):
         self.vy = sy
 
 
+# Специальные объекты, зеленый шарик или бомба
 class SpecBall(pygame.sprite.Sprite):
     def __init__(self, radius, x, y, gr_id, main_group, spec_balls_group):
         super().__init__(main_group)

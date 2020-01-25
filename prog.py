@@ -33,7 +33,8 @@ def start_screen():
                   "Набить максимальный счет, ",
                   "так чтобы блоки не коснулись дна",
                   "Чтобы продолжить нажмите на любую клавишу",
-                  "Зеленый шарик увеличивает количкство красных на 1"]
+                  "Зеленый шарик увеличивает количкство красных на 1",
+                  "Бомба дает одному шарику максимальный урон(999)"]
 
     fon = pygame.transform.scale(pygame.image.load('data//background.jpg'), (width, height))
     screen.blit(fon, (0, 0))
@@ -103,6 +104,7 @@ POS = [0, 0]
 running = True
 
 
+# Игровые блоки
 class NewBlock(Block):
     def __init__(self, x1, y1, w, h, main_group, blocks_group, score):
         super().__init__(x1, y1, w, h, main_group, blocks_group, score)
@@ -114,6 +116,7 @@ class NewBlock(Block):
             running = False
 
 
+# Красные шарики
 class PlayBall(Ball):
     def __init__(self, radius, x, y, sx, sy, main_group, balls_group):
         super().__init__(radius, x, y, sx, sy, main_group, balls_group)
